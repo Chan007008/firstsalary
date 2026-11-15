@@ -39,7 +39,8 @@ input[type=number],select,textarea{width:100%;padding:10px 12px;border:1px solid
 .big input{font-size:22px;font-weight:700;padding:12px 12px 12px 44px}
 .row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 aside select{font-size:13.5px;padding:10px 8px}
-.row2.cm{grid-template-columns:.9fr 1.1fr}
+.row2.cm{grid-template-columns:1fr 1fr}
+td small{display:block;color:var(--muted);font-size:12px;font-weight:400}
 .row3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
 .toggle{display:flex;align-items:center;gap:8px;font-size:13px;margin-top:10px}
 .toggle label{margin:0;color:var(--ink);font-weight:500}
@@ -93,7 +94,7 @@ tr.sel td{background:#f0f5ff}
 .link{background:none;border:none;padding:0;font:inherit;color:var(--brand);font-weight:700;text-decoration:underline;cursor:pointer}
 .acts{display:flex;gap:8px;margin-bottom:6px}
 .acts .btn{flex:1}
-.tag{font-size:11px;font-weight:700;background:#eef3ff;color:#0a47c2;padding:2px 7px;border-radius:999px}
+.tag{font-size:11px;font-weight:700;background:#eef3ff;color:#0a47c2;padding:2px 7px;border-radius:999px;white-space:nowrap}
 .up{color:var(--greenT)} .down{color:var(--redT)}
 .costrow{display:grid;grid-template-columns:1fr 124px;gap:10px;align-items:center;padding:4px 0;font-size:13.5px}
 .costrow small,.rel small{display:block;color:var(--muted);font-size:12px}
@@ -137,7 +138,7 @@ tr.sel td{background:#f0f5ff}
   <div class="wrap">
     <div class="brand"><div class="logo" aria-hidden="true">F</div>FirstSalary</div>
     <h1>Can you actually afford the job you've been offered?</h1>
-    <p>See your take-home pay, what's left after living costs and PTPTN in each city, the tax reliefs open to you and where your EPF is heading.</p>
+    <p>See your take-home pay, what's left after living costs and PTPTN in your state, the tax reliefs open to you and where your EPF is heading.</p>
     <div class="pills"><span class="pill">Rates as at November 2026</span><span class="pill">General information, not financial advice</span></div>
   </div>
 </header>
@@ -149,7 +150,7 @@ tr.sel td{background:#f0f5ff}
     <label for="gross">Monthly gross salary</label>
     <div class="inp big"><span>RM</span><input id="gross" type="number" inputmode="decimal" min="0" step="50" value="3800"></div>
     <div class="row2 cm">
-      <div><label for="city">City</label><select id="city"></select></div>
+      <div><label for="city">State</label><select id="city"></select></div>
       <div><label for="mode">Getting around</label><select id="mode"><option value="pt">Public transport</option><option value="car">Own a car</option></select></div>
     </div>
     <details id="more">
@@ -160,7 +161,7 @@ tr.sel td{background:#f0f5ff}
       <p class="sub">Compare another offer</p>
       <div class="row2">
         <div><label for="grossB">Offer B gross</label><div class="inp"><span>RM</span><input id="grossB" type="number" inputmode="decimal" min="0" step="50" placeholder="optional"></div></div>
-        <div><label for="cityB">Offer B city</label><select id="cityB"></select></div>
+        <div><label for="cityB">Offer B state</label><select id="cityB"></select></div>
       </div>
       <p class="sub">Retirement assumptions</p>
       <div class="row2">
@@ -221,7 +222,7 @@ tr.sel td{background:#f0f5ff}
         </div>
       </div>
       <div class="card" id="cmpCard" hidden><h2>Offer A vs Offer B</h2><div class="cmp" id="cmp"></div><div id="cmpIns"></div></div>
-      <div class="card"><h2>Same salary, different city</h2><table id="cityTbl"></table><div class="hint">EPF Belanjawanku 2024/2025 reference cost for each city plus your PTPTN payment. Your edited costs apply only to your chosen city.</div></div>
+      <div class="card"><h2>Same salary, different state</h2><table id="cityTbl"></table><div class="hint">Sorted by what is left. Each state uses EPF Belanjawanku 2024/2025 figures for the city shown, plus your PTPTN payment, so costs elsewhere in the state will differ. Your edited costs apply only to your chosen state.</div></div>
     </div>
 
     <!-- PTPTN -->
@@ -291,7 +292,7 @@ tr.sel td{background:#f0f5ff}
       <h3>AI coach</h3>
       <p>The AI offer coach is under development and is not available in this version.</p>
       <h3>How the numbers are worked out (rates as at November 2026)</h3>
-      <p><b>EPF:</b> employee 11%; employer 13% on wages up to RM5,000 and 12% above. As KWSP requires, contributions follow the Third Schedule wage bands (RM20 steps up to RM5,000, RM100 steps up to RM20,000), so they are worked out on the top of your band and rounded up to the next ringgit. <b>SOCSO</b> (0.5% employee, 1.75% employer) and <b>EIS</b> (0.2% each) apply to wages up to RM6,000; PERKESO uses its own banded tables, so real amounts can differ slightly. <b>LINDUNG 24 Jam</b> (0.75% until 31 May 2028, employee only, wages up to RM6,000) started on 1 June 2026; PERKESO states it is voluntary for Malaysian employees and mandatory for foreign workers. <b>Tax:</b> YA 2026 resident rates (0% to 30%) and the RM400 rebate where chargeable income is RM35,000 or less; PCB is shown as annual tax ÷ 12. Budget 2027 proposes a RM12,000 self relief and lower rates from YA 2027. <b>Living costs:</b> EPF's Belanjawanku 2024/2025 minimum monthly budget for a single person in each city, by public transport or car; the total includes RM150 of savings and assumes a rented room. <b>PTPTN:</b> ujrah is a flat 1% a year on the balance, with PTPTN's standard periods (5 years up to RM10,000, 10 years up to RM22,000, 15 years up to RM50,000, 20 years above); extra payments are modelled as shortening the period, which is our assumption, and PTPTN's repayment page was last updated in March 2022. <b>Retirement:</b> the projection assumes a steady raise, dividend and inflation rate, is shown in today's prices, and compares with EPF's Retirement Income Adequacy targets at age 60 (RM390,000, RM650,000, RM1.3 million). Rates and rules change, so confirm with the official source.</p>
+      <p><b>EPF:</b> employee 11%; employer 13% on wages up to RM5,000 and 12% above. As KWSP requires, contributions follow the Third Schedule wage bands (RM20 steps up to RM5,000, RM100 steps up to RM20,000), so they are worked out on the top of your band and rounded up to the next ringgit. <b>SOCSO</b> (0.5% employee, 1.75% employer) and <b>EIS</b> (0.2% each) apply to wages up to RM6,000; PERKESO uses its own banded tables, so real amounts can differ slightly. <b>LINDUNG 24 Jam</b> (0.75% until 31 May 2028, employee only, wages up to RM6,000) started on 1 June 2026; PERKESO states it is voluntary for Malaysian employees and mandatory for foreign workers. <b>Tax:</b> YA 2026 resident rates (0% to 30%) and the RM400 rebate where chargeable income is RM35,000 or less; PCB is shown as annual tax ÷ 12. Budget 2027 proposes a RM12,000 self relief and lower rates from YA 2027. <b>Living costs:</b> EPF's Belanjawanku 2024/2025 minimum monthly budget for a single person, by public transport or car; the total includes RM150 of savings and assumes a rented room. EPF surveys Klang Valley and eleven cities, not whole states, so each state uses the figures for its surveyed city (Klang Valley for Selangor, Kuala Lumpur and Putrajaya), and costs elsewhere in a state will differ. Perlis and Labuan are not in the guide, so they use Alor Setar and Kota Kinabalu as stand-ins. <b>PTPTN:</b> ujrah is a flat 1% a year on the balance, with PTPTN's standard periods (5 years up to RM10,000, 10 years up to RM22,000, 15 years up to RM50,000, 20 years above); extra payments are modelled as shortening the period, which is our assumption, and PTPTN's repayment page was last updated in March 2022. <b>Retirement:</b> the projection assumes a steady raise, dividend and inflation rate, is shown in today's prices, and compares with EPF's Retirement Income Adequacy targets at age 60 (RM390,000, RM650,000, RM1.3 million). Rates and rules change, so confirm with the official source.</p>
       <p style="margin-top:8px">Official sources: EPF Belanjawanku 2024/2025 · <a href="https://www.hasil.gov.my" target="_blank" rel="noopener">LHDN</a> · <a href="https://www.kwsp.gov.my" target="_blank" rel="noopener">KWSP (EPF)</a> · <a href="https://www.perkeso.gov.my" target="_blank" rel="noopener">PERKESO</a> · <a href="https://www.ptptn.gov.my" target="_blank" rel="noopener">PTPTN</a></p>
     </section>
   </section>
@@ -347,14 +348,30 @@ function simLoan(b, pay){
   return {months:m, ujrah:u*m};
 }
 function fv(pmt, months, annual){ const ri=annual/12; if(months<=0) return 0; return ri===0 ? pmt*months : pmt*(Math.pow(1+ri,months)-1)/ri; }
-const CITIES = {
-  kv:{name:"Klang Valley (KL)", food:660, rent:400, trans:[140,840], bills:100, other:[670,800]},
-  gt:{name:"George Town (Penang)", food:640, rent:330, trans:[140,730], bills:100, other:[650,770]},
-  jb:{name:"Johor Bahru", food:640, rent:280, trans:[130,650], bills:100, other:[640,730]},
-  as:{name:"Alor Setar (Kedah)", food:560, rent:220, trans:[130,650], bills:100, other:[590,680]}
+// EPF Belanjawanku 2024/2025, single person: [public transport user, car owner]. Surveyed areas only.
+const LOC = {
+  kv:{city:"Klang Valley", food:660, rent:400, trans:[140,840], bills:100, other:[670,800]},
+  gt:{city:"George Town", food:640, rent:330, trans:[140,730], bills:100, other:[650,770]},
+  jb:{city:"Johor Bahru", food:640, rent:280, trans:[130,650], bills:100, other:[640,730]},
+  as:{city:"Alor Setar", food:560, rent:220, trans:[130,650], bills:100, other:[590,680]},
+  kk:{city:"Kota Kinabalu", food:620, rent:260, trans:[120,630], bills:100, other:[630,720]},
+  kt:{city:"Kuala Terengganu", food:600, rent:240, trans:[160,680], bills:100, other:[610,700]},
+  kc:{city:"Kuching", food:620, rent:260, trans:[120,620], bills:100, other:[630,720]},
+  kn:{city:"Kuantan", food:610, rent:240, trans:[160,660], bills:100, other:[620,710]},
+  kb:{city:"Kota Bharu", food:580, rent:220, trans:[120,680], bills:100, other:[590,680]},
+  ip:{city:"Ipoh", food:620, rent:270, trans:[130,660], bills:100, other:[620,710]},
+  sb:{city:"Seremban", food:620, rent:300, trans:[140,670], bills:100, other:[620,710]},
+  ml:{city:"Malacca City", food:620, rent:270, trans:[130,670], bills:100, other:[620,710]}
 };
-function preset(city, mode){
-  const c=CITIES[city], i=mode==="car"?1:0, o={rent:c.rent, food:c.food, trans:c.trans[i], bills:c.bills, other:c.other[i]};
+// Each state uses the figures for its surveyed city. Perlis and Labuan are not in the guide, so they use a neighbour as a stand-in.
+const CITIES = {
+  jhr:{name:"Johor", loc:"jb"}, kdh:{name:"Kedah", loc:"as"}, ktn:{name:"Kelantan", loc:"kb"}, mlk:{name:"Melaka", loc:"ml"},
+  nsn:{name:"Negeri Sembilan", loc:"sb"}, phg:{name:"Pahang", loc:"kn"}, png:{name:"Penang", loc:"gt"}, prk:{name:"Perak", loc:"ip"},
+  pls:{name:"Perlis", loc:"as", proxy:true}, sbh:{name:"Sabah", loc:"kk"}, swk:{name:"Sarawak", loc:"kc"}, sgr:{name:"Selangor", loc:"kv"},
+  trg:{name:"Terengganu", loc:"kt"}, kul:{name:"Kuala Lumpur", loc:"kv"}, lbn:{name:"Labuan", loc:"kk", proxy:true}, pjy:{name:"Putrajaya", loc:"kv"}
+};
+function preset(k, mode){
+  const c=LOC[CITIES[k].loc], i=mode==="car"?1:0, o={rent:c.rent, food:c.food, trans:c.trans[i], bills:c.bills, other:c.other[i]};
   o.total=o.rent+o.food+o.trans+o.bills+o.other; return o;
 }
 function minGross(cost, opts){
@@ -387,11 +404,11 @@ const RELIEFS = [
   ["med","Medical check-up, vaccination, dental","Each capped at RM1,000, paid by you",3000],
   ["edu","Education fees (self)","Master's, or approved professional and technical courses",7000]
 ];
-const DEFAULTS = {gross:"3800",allow:"0",city:"kv",mode:"pt",grossB:"",cityB:"kv",age:"23",bal:"0",raise:"4",div:"5.5",infl:"2.5",p_bal:"0",p_inst:"",p_extra:"0",p_ret:"5",p_disc:"0"};
-const EXAMPLE = {gross:"3900",allow:"0",city:"kv",mode:"pt",grossB:"3600",cityB:"as",age:"23",bal:"0",raise:"4",div:"5.5",infl:"2.5",p_bal:"30000",p_inst:"",p_extra:"100",p_ret:"5",p_disc:"0",r_life:"1500",r_sport:"600"};
+const DEFAULTS = {gross:"3800",allow:"0",city:"kul",mode:"pt",grossB:"",cityB:"kul",age:"23",bal:"0",raise:"4",div:"5.5",infl:"2.5",p_bal:"0",p_inst:"",p_extra:"0",p_ret:"5",p_disc:"0"};
+const EXAMPLE = {gross:"3900",allow:"0",city:"kul",mode:"pt",grossB:"3600",cityB:"kdh",age:"23",bal:"0",raise:"4",div:"5.5",infl:"2.5",p_bal:"30000",p_inst:"",p_extra:"100",p_ret:"5",p_disc:"0",r_life:"1500",r_sport:"600"};
 
 const cityOpts = Object.entries(CITIES).map(([k,c])=>`<option value="${k}">${c.name.split(" (")[0]}</option>`).join("");
-$("city").innerHTML = cityOpts; $("cityB").innerHTML = cityOpts;
+$("city").innerHTML = cityOpts; $("cityB").innerHTML = cityOpts; $("city").value="kul"; $("cityB").value="kul";
 $("costRows").innerHTML = COSTS.map(c=>`<div class="costrow"><label for="c_${c[0]}" style="margin:0;color:var(--ink);font-size:13.5px">${c[1]}<small>${c[2]}</small></label><div class="inp"><span>RM</span><input id="c_${c[0]}" type="number" inputmode="decimal" min="0" step="10"></div></div>`).join("");
 $("relRows").innerHTML = RELIEFS.map(r=>`<div class="rel"><label for="r_${r[0]}" style="margin:0;color:var(--ink);font-size:13.5px">${r[1]} <span class="tag">max ${RM0(r[3])}</span><small>${r[2]}</small></label><div class="inp"><span>RM</span><input id="r_${r[0]}" type="number" inputmode="decimal" min="0" max="${r[3]}" step="100" value="0"></div><div class="sv" id="s_${r[0]}">–</div></div>`).join("");
 function fillCosts(){ const p=preset($("city").value,$("mode").value); COSTS.forEach(c=>$("c_"+c[0]).value=p[c[0]]); }
@@ -457,7 +474,8 @@ function render(){
           : share<=1 ? ["mid","Stretched","Costs take most of your pay, leaving little room to save.","⚠️","w"]
           : ["bad","Shortfall","This salary doesn't cover these costs.","🚨","b"];
   chip("hLeftChip", v[0], has ? `${v[1]} · costs are ${pct(share)} of take-home` : v[1]);
-  $("costSrc").textContent = `Pre-filled from EPF's Belanjawanku 2024/2025 minimum budget for a single person in ${short(city.name)}, ${mode==="car"?"car owner":"public transport"}: ${RM0(preset(cityK,mode).total)} a month.`;
+  const L0 = LOC[city.loc];
+  $("costSrc").textContent = `Pre-filled from EPF's Belanjawanku 2024/2025 minimum budget for a single person in ${L0.city}, ${mode==="car"?"car owner":"public transport"}: ${RM0(preset(cityK,mode).total)} a month.${city.proxy?` EPF has no figure for ${city.name}, so ${L0.city} is used as a stand-in.`:` Costs in other parts of ${city.name} will differ.`}`;
   $("costTot").innerHTML = `<tr><td>Living costs</td><td>${RM0(living)}</td></tr>${pBal>0?`<tr><td>PTPTN repayment</td><td>${RM0(ptPay)}</td></tr>`:""}<tr class="total"><td>Total monthly costs</td><td>${RM0(costs)}</td></tr>`;
   $("verdict").innerHTML = ins(v[4], v[3], `<b>${v[1]}.</b> ${v[2]}`);
   const base0 = {lindung, relief:0}, mg = minGross(costs, base0), mg20 = minGross(costs/0.8, base0);
@@ -474,9 +492,8 @@ function render(){
     $("cmpIns").innerHTML = ins("","⚖️",`Offer B pays <b>${RM0(Math.abs(gd))} ${gd>=0?"more":"less"}</b> gross but leaves <b>${RM0(Math.abs(d))} ${d>=0?"more":"less"}</b> each month after tax and living costs.${(gd>0&&d<0)||(gd<0&&d>0)?" <b>The higher salary leaves you with less.</b>":""} Offer B uses the reference cost for its city. Pay is one factor; growth, commute and the role itself matter too.`);
   } else $("cmpCard").hidden=true;
 
-  $("cityTbl").innerHTML = `<tr><th scope="col">City</th><th scope="col" class="r">Reference cost</th><th scope="col" class="r">Break-even gross</th><th scope="col">Left each month</th></tr>` + Object.entries(CITIES).map(([k,c])=>{
-    const t=preset(k,mode).total+ptPay, l=r.net-t;
-    return `<tr class="${k===cityK?"sel":""}"><td>${c.name}${k===cityK?" (selected)":""}</td><td class="r">${RM0(t)}</td><td class="r">${RM0(minGross(t,base0))}</td><td class="${l>=0?"up":"down"}">${has?RM0(l):"–"}</td></tr>`; }).join("");
+  $("cityTbl").innerHTML = `<tr><th scope="col">State</th><th scope="col" class="r">Reference cost</th><th scope="col" class="r">Break-even gross</th><th scope="col">Left each month</th></tr>` + Object.entries(CITIES).map(([k,c])=>{ const t=preset(k,mode).total+ptPay; return {k,c,t,l:r.net-t}; }).sort((a,b)=>b.l-a.l||a.c.name.localeCompare(b.c.name)).map(({k,c,t,l})=>
+    `<tr class="${k===cityK?"sel":""}"><td>${c.name}${k===cityK?" (selected)":""}<small>${LOC[c.loc].city}${c.proxy?", stand-in":""}</small></td><td class="r">${RM0(t)}</td><td class="r">${RM0(minGross(t,base0))}</td><td class="${l>=0?"up":"down"}">${has?RM0(l):"–"}</td></tr>`).join("");
 
   // PTPTN
   let ptSummary = null;
