@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FirstSalary — First Salary Planner</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+:root{
+  --bg:#f6f7fb; --card:#fff; --ink:#14172b; --muted:#5b6180; --line:#e1e4ee;
+  --brand:#0b5fff; --green:#00b38a; --greenT:#00694f; --redT:#b3242a; --amber:#f5a524;
+  --shadow:0 1px 2px rgba(20,23,43,.04),0 8px 24px rgba(20,23,43,.06);
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{margin:0;font-family:"Plus Jakarta Sans",system-ui,sans-serif;background:var(--bg);color:var(--ink);line-height:1.45}
+:focus-visible{outline:3px solid #ffb020;outline-offset:2px;border-radius:6px}
+.skip{position:absolute;left:-999px;top:8px;background:#fff;color:var(--ink);padding:8px 12px;border-radius:8px;z-index:20;font-weight:700}
+.skip:focus{left:8px}
+header{background:linear-gradient(135deg,#0b2a6f,#0b5fff 60%,#0a7d6b);color:#fff;padding:24px 20px 64px}
+.wrap{max-width:1220px;margin:0 auto}
+.brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:21px;letter-spacing:-.02em}
+.logo{width:32px;height:32px;border-radius:10px;background:#fff;color:#0b5fff;display:grid;place-items:center;font-weight:800}
+header h1{font-size:clamp(22px,3.2vw,34px);margin:14px 0 6px;letter-spacing:-.03em;max-width:760px;line-height:1.15}
+header p{margin:0;max-width:720px;font-size:15px}
+.pills{display:flex;gap:6px;flex-wrap:wrap;margin-top:12px}
+.pill{background:rgba(8,20,60,.45);border:1px solid rgba(255,255,255,.35);padding:3px 10px;border-radius:999px;font-size:12px;font-weight:600}
+main{margin-top:-44px;padding:0 20px 40px}
+.grid{display:grid;grid-template-columns:330px 1fr;gap:16px;align-items:start}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);padding:18px}
+.card h2{font-size:15px;margin:0 0 12px;letter-spacing:-.01em;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+label{display:block;font-size:12.5px;font-weight:600;color:var(--muted);margin:10px 0 4px}
+.inp{position:relative}
+.inp span{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:14px;font-weight:600;pointer-events:none}
+input[type=number],select,textarea{width:100%;padding:10px 12px;border:1px solid #c9cede;border-radius:10px;font:inherit;font-size:14.5px;background:#fbfcff;color:var(--ink)}
+.inp input{padding-left:40px}
+.big input{font-size:22px;font-weight:700;padding:12px 12px 12px 44px}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+aside select{font-size:13.5px;padding:10px 8px}
+.row2.cm{grid-template-columns:.9fr 1.1fr}
+.row3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.toggle{display:flex;align-items:center;gap:8px;font-size:13px;margin-top:10px}
+.toggle label{margin:0;color:var(--ink);font-weight:500}
+.toggle input{width:18px;height:18px;flex:none}
+.hint{font-size:12px;color:var(--muted);margin-top:4px}
+details{margin-top:12px;border-top:1px dashed var(--line);padding-top:10px}
+summary{cursor:pointer;font-weight:700;font-size:13px;color:var(--brand)}
+.sub{font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin:14px 0 0}
+.right{display:flex;flex-direction:column;gap:16px;min-width:0}
+.hero{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.kpi{border-radius:14px;padding:13px 14px;border:1px solid var(--line);background:#fff;min-width:0}
+.kpi.main{background:linear-gradient(135deg,#0a4bd0,#0b5fff);color:#fff;border:none}
+.kpi .l{font-size:12px;font-weight:600;color:var(--muted)}
+.kpi .v{font-size:22px;font-weight:800;letter-spacing:-.03em;margin-top:3px;white-space:nowrap}
+.kpi .s{font-size:11.5px;color:var(--muted);margin-top:2px}
+.kpi.main .l,.kpi.main .s{color:#fff}
+.tabs{display:flex;gap:4px;background:#fff;padding:5px;border-radius:14px;border:1px solid var(--line);box-shadow:var(--shadow);position:sticky;top:8px;z-index:5;overflow-x:auto;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tabs button{flex:1 0 auto;white-space:nowrap;border:none;background:transparent;font:inherit;font-weight:700;font-size:13px;color:var(--muted);padding:9px 12px;border-radius:10px;cursor:pointer}
+.tabs button[aria-selected=true]{background:var(--ink);color:#fff}
+.tab{display:flex;flex-direction:column;gap:16px}
+.headline{display:flex;align-items:center;justify-content:space-between;gap:10px 16px;flex-wrap:wrap;background:#fff;border:1px solid var(--line);border-radius:16px;padding:16px 18px;box-shadow:var(--shadow)}
+.hn{font-size:clamp(28px,5vw,40px);font-weight:800;letter-spacing:-.03em;line-height:1.1}
+.hc{font-size:13.5px;color:var(--muted);margin-top:2px}
+.chip{font-size:12.5px;font-weight:700;padding:5px 12px;border-radius:999px;background:#eef3ff;color:#0a47c2}
+.chip.ok{background:#e0f5ee;color:var(--greenT)} .chip.mid{background:#fff1cf;color:#6e4500} .chip.bad{background:#fde3e4;color:var(--redT)}
+.bar{display:flex;height:16px;border-radius:999px;overflow:hidden;margin:4px 0 10px;background:#eee}
+.bar div{height:100%}
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+td,th{padding:7px 0;border-bottom:1px solid var(--line);text-align:left}
+th{font-size:12px;color:var(--muted);font-weight:700}
+td:last-child,th:last-child{text-align:right;font-weight:600;font-variant-numeric:tabular-nums}
+td.r,th.r{text-align:right;font-variant-numeric:tabular-nums;padding-right:10px}
+tr.total td{font-weight:800;border-bottom:none;padding-top:10px}
+tr.sel td{background:#f0f5ff}
+.dot{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:8px;vertical-align:-1px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.bk{border-radius:12px;padding:12px;background:#f7f9ff;border:1px solid var(--line);min-width:0}
+.bk .t{font-size:12px;font-weight:700}
+.bk .a{font-size:19px;font-weight:800;margin-top:3px;letter-spacing:-.02em}
+.bk .p{font-size:12px;color:var(--muted)}
+.insight{display:flex;gap:10px;padding:11px 12px;border-radius:12px;background:#eefaf5;border:1px solid #bfe8d9;font-size:13.5px;margin-top:10px}
+.insight.w{background:#fff8e8;border-color:#f3d79b}
+.insight.b{background:#fdeeee;border-color:#f0b9bc}
+.ic{font-size:17px;flex:none}
+.chartbox{position:relative;height:300px}
+.cmp{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.btn{background:var(--ink);color:#fff;border:1px solid var(--ink);padding:9px 14px;border-radius:10px;font:inherit;font-weight:700;font-size:13px;cursor:pointer}
+.btn.ghost{background:#fff;color:var(--ink);border-color:#c9cede}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.link{background:none;border:none;padding:0;font:inherit;color:var(--brand);font-weight:700;text-decoration:underline;cursor:pointer}
+.acts{display:flex;gap:8px;margin-bottom:6px}
+.acts .btn{flex:1}
+.tag{font-size:11px;font-weight:700;background:#eef3ff;color:#0a47c2;padding:2px 7px;border-radius:999px}
+.up{color:var(--greenT)} .down{color:var(--redT)}
+.costrow{display:grid;grid-template-columns:1fr 124px;gap:10px;align-items:center;padding:4px 0;font-size:13.5px}
+.costrow small,.rel small{display:block;color:var(--muted);font-size:12px}
+.rel{display:grid;grid-template-columns:1fr 116px 78px;gap:10px;align-items:center;padding:7px 0;border-bottom:1px solid var(--line);font-size:13.5px}
+.rel .sv{text-align:right;font-weight:700;color:var(--greenT);font-variant-numeric:tabular-nums}
+.chat{display:flex;flex-direction:column;gap:10px;max-height:400px;overflow:auto;padding:4px}
+.msg{padding:10px 13px;border-radius:14px;font-size:13.5px;max-width:90%;white-space:pre-wrap;overflow-wrap:anywhere}
+.msg.u{align-self:flex-end;background:#0a4bd0;color:#fff;border-bottom-right-radius:4px}
+.msg.a{align-self:flex-start;background:#f1f3f9;border-bottom-left-radius:4px}
+.ailabel{display:block;font-size:11px;font-weight:700;color:var(--muted);margin-bottom:4px;white-space:normal}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0}
+.chips button{border:1px solid #c9cede;background:#fff;border-radius:999px;padding:6px 11px;font:inherit;font-size:12.5px;font-weight:600;color:#0a47c2;cursor:pointer}
+.chips button:disabled{opacity:.45;cursor:not-allowed}
+.send{display:grid;grid-template-columns:1fr auto;gap:8px;margin-top:10px}
+.consent{background:#f7f9ff;border:1px solid var(--line);border-radius:12px;padding:14px;font-size:13.5px}
+.consent ul{margin:8px 0;padding-left:18px}
+.legal{font-size:12.5px;color:#3d4260;line-height:1.6}
+.legal h2{color:var(--ink)}
+.legal h3{font-size:13px;margin:12px 0 2px;color:var(--ink)}
+.legal p{margin:0}
+.legal a{color:#0a47c2}
+@media(max-width:1000px){.hero{grid-template-columns:1fr 1fr}}
+@media(max-width:900px){
+  .grid{grid-template-columns:1fr}.two{grid-template-columns:1fr}
+  aside.card{padding:14px}
+}
+@media(max-width:600px){
+  header{padding:16px 16px 56px} header p{display:none} main{padding:0 12px 32px}
+  .row3,.cmp{grid-template-columns:1fr}
+  .kpi{padding:10px 12px}.kpi .v{font-size:18px}
+  .tabs button{flex:0 0 auto}
+  .card{padding:14px}
+  .rel{grid-template-columns:1fr 104px 62px;gap:8px}
+}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
+</style>
+</head>
+<body>
+<a class="skip" href="#results">Skip to results</a>
+<header>
+  <div class="wrap">
+    <div class="brand"><div class="logo" aria-hidden="true">F</div>FirstSalary</div>
+    <h1>Can you actually afford the job you've been offered?</h1>
+    <p>See your take-home pay, what's left after living costs and PTPTN in each city, the tax reliefs open to you and where your EPF is heading.</p>
+    <div class="pills"><span class="pill">Rates as at November 2026</span><span class="pill">General information, not financial advice</span></div>
+  </div>
+</header>
+
+<main>
+<div class="wrap grid">
+  <aside class="card" aria-label="Your details">
+    <div class="acts"><button class="btn ghost" id="exBtn" type="button">Try an example</button><button class="btn ghost" id="resetBtn" type="button">Reset</button></div>
+    <label for="gross">Monthly gross salary</label>
+    <div class="inp big"><span>RM</span><input id="gross" type="number" inputmode="decimal" min="0" step="50" value="3800"></div>
+    <div class="row2 cm">
+      <div><label for="city">City</label><select id="city"></select></div>
+      <div><label for="mode">Getting around</label><select id="mode"><option value="pt">Public transport</option><option value="car">Own a car</option></select></div>
+    </div>
+    <details id="more">
+      <summary>More options: allowance, Offer B, retirement</summary>
+      <label for="allow">Fixed monthly allowance (taxable)</label>
+      <div class="inp"><span>RM</span><input id="allow" type="number" inputmode="decimal" min="0" step="50" value="0"></div>
+      <div class="toggle"><input type="checkbox" id="lindung" checked><label for="lindung">Include LINDUNG 24 Jam (0.75%, optional for Malaysians)</label></div>
+      <p class="sub">Compare another offer</p>
+      <div class="row2">
+        <div><label for="grossB">Offer B gross</label><div class="inp"><span>RM</span><input id="grossB" type="number" inputmode="decimal" min="0" step="50" placeholder="optional"></div></div>
+        <div><label for="cityB">Offer B city</label><select id="cityB"></select></div>
+      </div>
+      <p class="sub">Retirement assumptions</p>
+      <div class="row2">
+        <div><label for="age">Current age</label><input id="age" type="number" inputmode="numeric" min="17" max="59" value="23"></div>
+        <div><label for="bal">EPF balance now (RM)</label><input id="bal" type="number" inputmode="decimal" min="0" step="100" value="0"></div>
+      </div>
+      <div class="row2">
+        <div><label for="raise">Annual raise %</label><input id="raise" type="number" inputmode="decimal" min="0" max="50" step="0.5" value="4"></div>
+        <div><label for="div">EPF dividend %</label><input id="div" type="number" inputmode="decimal" min="0" max="50" step="0.1" value="5.5"></div>
+      </div>
+      <div class="row2">
+        <div><label for="infl">Inflation %</label><input id="infl" type="number" inputmode="decimal" min="0" max="50" step="0.1" value="2.5"></div>
+        <div></div>
+      </div>
+    </details>
+    <p class="hint" style="margin-top:12px">🔒 Your numbers stay in this browser and are not saved.<br>A general guide only. Figures can contain errors, so use it at your own risk. <button class="link" id="legalLink" type="button">Privacy and disclaimers</button></p>
+  </aside>
+
+  <section class="right" id="results" aria-label="Results">
+    <div class="hero">
+      <div class="kpi main"><div class="l">Monthly take-home pay</div><div class="v" id="kNet">–</div><div class="s" id="kNetS">–</div></div>
+      <div class="kpi"><div class="l">Left after living costs</div><div class="v" id="kLeft">–</div><div class="s" id="kLeftS">–</div></div>
+      <div class="kpi"><div class="l">Into your EPF each month</div><div class="v" id="kEpf">–</div><div class="s" id="kEpfS">–</div></div>
+      <div class="kpi"><div class="l">Est. monthly tax (PCB)</div><div class="v" id="kTax">–</div><div class="s" id="kTaxS">–</div></div>
+    </div>
+
+    <div class="tabs" id="tabs" role="tablist" aria-label="Sections">
+      <button role="tab" id="tab-payslip" data-tab="payslip" aria-controls="t-payslip">Payslip</button>
+      <button role="tab" id="tab-afford" data-tab="afford" aria-controls="t-afford">Can I afford it?</button>
+      <button role="tab" id="tab-ptptn" data-tab="ptptn" aria-controls="t-ptptn">PTPTN</button>
+      <button role="tab" id="tab-tax" data-tab="tax" aria-controls="t-tax">Tax reliefs</button>
+      <button role="tab" id="tab-retirement" data-tab="retirement" aria-controls="t-retirement">Retirement</button>
+      <button role="tab" id="tab-coach" data-tab="coach" aria-controls="t-coach">AI coach (soon)</button>
+    </div>
+
+    <!-- PAYSLIP -->
+    <div class="tab" id="t-payslip" role="tabpanel" aria-labelledby="tab-payslip">
+      <div class="headline"><div><div class="hn" id="hPay">–</div><div class="hc">of your gross pay reaches your bank account</div></div><span class="chip" id="hPayC">–</span></div>
+      <div class="two">
+        <div class="card"><h2>Where your gross pay goes</h2><div class="bar" id="bar" role="img"></div><table id="brk"></table></div>
+        <div class="card"><h2>What your employer pays</h2><table id="emp"></table><div id="raiseIns"></div></div>
+      </div>
+    </div>
+
+    <!-- AFFORD -->
+    <div class="tab" id="t-afford" role="tabpanel" aria-labelledby="tab-afford" hidden>
+      <div class="headline"><div><div class="hn" id="hLeft">–</div><div class="hc" id="hLeftC">left each month after living costs</div></div><span class="chip" id="hLeftChip">–</span></div>
+      <div class="two">
+        <div class="card">
+          <h2>Your monthly living costs <span class="tag">EPF reference budget, edit freely</span></h2>
+          <div class="hint" id="costSrc" style="margin:-4px 0 6px"></div>
+          <div id="costRows"></div>
+          <table style="margin-top:6px"><tbody id="costTot"></tbody></table>
+        </div>
+        <div class="card">
+          <h2>What it means</h2>
+          <div id="verdict"></div><div id="minIns"></div><div id="efIns"></div>
+        </div>
+      </div>
+      <div class="card" id="cmpCard" hidden><h2>Offer A vs Offer B</h2><div class="cmp" id="cmp"></div><div id="cmpIns"></div></div>
+      <div class="card"><h2>Same salary, different city</h2><table id="cityTbl"></table><div class="hint">EPF Belanjawanku 2024/2025 reference cost for each city plus your PTPTN payment. Your edited costs apply only to your chosen city.</div></div>
+    </div>
+
+    <!-- PTPTN -->
+    <div class="tab" id="t-ptptn" role="tabpanel" aria-labelledby="tab-ptptn" hidden>
+      <div class="headline"><div><div class="hn" id="hPt">–</div><div class="hc" id="hPtC">Enter your loan balance below</div></div><span class="chip" id="hPtChip" hidden></span></div>
+      <div class="card">
+        <h2>Your PTPTN loan</h2>
+        <div class="row3">
+          <div><label for="p_bal">Outstanding balance</label><div class="inp"><span>RM</span><input id="p_bal" type="number" inputmode="decimal" min="0" step="500" value="0"></div></div>
+          <div><label for="p_inst">Monthly instalment</label><div class="inp"><span>RM</span><input id="p_inst" type="number" inputmode="decimal" min="0" step="10" placeholder="estimate"></div></div>
+          <div><label for="p_extra">Extra payment a month</label><div class="inp"><span>RM</span><input id="p_extra" type="number" inputmode="decimal" min="0" step="10" value="0"></div></div>
+        </div>
+        <div class="row3">
+          <div><label for="p_ret">Assumed return if invested %</label><input id="p_ret" type="number" inputmode="decimal" min="0" max="50" step="0.5" value="5"></div>
+          <div><label for="p_disc">Settlement discount %, if any</label><input id="p_disc" type="number" inputmode="decimal" min="0" max="100" step="1" value="0"></div>
+          <div></div>
+        </div>
+        <div class="hint">Leave the instalment blank to use PTPTN's standard period for your balance (5 to 20 years). Your real figure is in the myPTPTN app.</div>
+      </div>
+      <div class="card" id="pCard"><h2>Repayment plan <span class="tag">estimate</span></h2><table id="pTbl"></table><div id="pIns"></div></div>
+    </div>
+
+    <!-- TAX -->
+    <div class="tab" id="t-tax" role="tabpanel" aria-labelledby="tab-tax" hidden>
+      <div class="headline"><div><div class="hn" id="hTax">–</div><div class="hc" id="hTaxC">–</div></div><span class="chip" id="hTaxChip">–</span></div>
+      <div class="card">
+        <h2>Tax relief estimator <span class="tag">YA 2026, estimate</span></h2>
+        <div class="hint" style="margin:-4px 0 6px">Enter what you expect to spend this year. Self (RM9,000), EPF (up to RM4,000) and SOCSO/EIS (up to RM350) are already applied.</div>
+        <div class="rel" style="font-size:12px;color:var(--muted);font-weight:700" aria-hidden="true"><div>Relief</div><div>You spend a year</div><div style="text-align:right">Tax saved</div></div>
+        <div id="relRows"></div>
+        <table style="margin-top:10px" id="taxTbl"></table>
+        <div id="taxIns"></div>
+      </div>
+    </div>
+
+    <!-- RETIREMENT -->
+    <div class="tab" id="t-retirement" role="tabpanel" aria-labelledby="tab-retirement" hidden>
+      <div class="headline"><div><div class="hn" id="hRet">–</div><div class="hc" id="hRetC">projected EPF balance at 60</div></div><span class="chip" id="hRetChip">–</span></div>
+      <div class="card">
+        <h2>How your EPF could grow <span class="tag">today's prices, illustration</span></h2>
+        <div class="chartbox" id="chartbox"><canvas id="chart" role="img" aria-label="Line chart of projected EPF balance by age"></canvas></div>
+        <details id="retDetails"><summary>Show the numbers as a table</summary><table id="retTbl" style="margin-top:8px"></table></details>
+        <div id="epfIns"></div>
+      </div>
+    </div>
+
+    <!-- COACH -->
+    <div class="tab" id="t-coach" role="tabpanel" aria-labelledby="tab-coach" hidden>
+      <div class="card">
+        <h2>AI offer coach <span class="tag">under development</span></h2>
+        <div class="insight w"><span class="ic" aria-hidden="true">🚧</span><div><b>Not available yet.</b> The AI offer coach is still under development. When it's ready, it will answer questions about your offer using the numbers on this page. Every other tab works now.</div></div>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center"><button class="btn ghost" id="copyBtn" type="button">Copy my summary</button><span id="copied" class="hint" role="status"></span></div>
+
+    <section class="card legal" id="legal" aria-label="About, privacy and disclaimers" tabindex="-1">
+      <h2>About, privacy and disclaimers</h2>
+      <h3>General information only</h3>
+      <p>FirstSalary is an educational calculator. It is not a licensed financial planner, financial adviser or investment adviser under the Capital Markets and Services Act 2007 or the Financial Services Act 2013, and it does not recommend any financial product, fund, insurer or provider. Nothing here is personal financial advice. Speak to a licensed financial planner before making financial decisions.</p>
+      <h3>No guarantee and no liability</h3>
+      <p>FirstSalary is a general guide only. It is provided "as is", with no guarantee that the figures are accurate, complete or up to date. The creator of FirstSalary accepts no responsibility or liability for any error, miscalculation or omission, or for any loss or decision made on the basis of this tool. Use it at your own risk, and always check your payslip, your offer letter and the official sources before you act.</p>
+      <h3>Tax</h3>
+      <p>Tax and PCB figures are estimates for a resident individual, not advice from a licensed tax agent. Your employer's actual PCB and your final assessment may differ. Check relief conditions and file through <a href="https://www.hasil.gov.my" target="_blank" rel="noopener">LHDN (MyTax)</a>.</p>
+      <h3>Your privacy</h3>
+      <p>We don't ask for your name, IC number or contact details. The numbers you type are calculated in your browser, are not sent to us and are not saved, so they disappear when you close or reload the page. The page loads a font from Google Fonts and a chart library from cdnjs; those services receive a standard web request but none of your inputs. No AI service receives your inputs.</p>
+      <h3>AI coach</h3>
+      <p>The AI offer coach is under development and is not available in this version.</p>
+      <h3>How the numbers are worked out (rates as at November 2026)</h3>
+      <p><b>EPF:</b> employee 11%; employer 13% on wages up to RM5,000 and 12% above. As KWSP requires, contributions follow the Third Schedule wage bands (RM20 steps up to RM5,000, RM100 steps up to RM20,000), so they are worked out on the top of your band and rounded up to the next ringgit. <b>SOCSO</b> (0.5% employee, 1.75% employer) and <b>EIS</b> (0.2% each) apply to wages up to RM6,000; PERKESO uses its own banded tables, so real amounts can differ slightly. <b>LINDUNG 24 Jam</b> (0.75% until 31 May 2028, employee only, wages up to RM6,000) started on 1 June 2026; PERKESO states it is voluntary for Malaysian employees and mandatory for foreign workers. <b>Tax:</b> YA 2026 resident rates (0% to 30%) and the RM400 rebate where chargeable income is RM35,000 or less; PCB is shown as annual tax ÷ 12. Budget 2027 proposes a RM12,000 self relief and lower rates from YA 2027. <b>Living costs:</b> EPF's Belanjawanku 2024/2025 minimum monthly budget for a single person in each city, by public transport or car; the total includes RM150 of savings and assumes a rented room. <b>PTPTN:</b> ujrah is a flat 1% a year on the balance, with PTPTN's standard periods (5 years up to RM10,000, 10 years up to RM22,000, 15 years up to RM50,000, 20 years above); extra payments are modelled as shortening the period, which is our assumption, and PTPTN's repayment page was last updated in March 2022. <b>Retirement:</b> the projection assumes a steady raise, dividend and inflation rate, is shown in today's prices, and compares with EPF's Retirement Income Adequacy targets at age 60 (RM390,000, RM650,000, RM1.3 million). Rates and rules change, so confirm with the official source.</p>
+      <p style="margin-top:8px">Official sources: EPF Belanjawanku 2024/2025 · <a href="https://www.hasil.gov.my" target="_blank" rel="noopener">LHDN</a> · <a href="https://www.kwsp.gov.my" target="_blank" rel="noopener">KWSP (EPF)</a> · <a href="https://www.perkeso.gov.my" target="_blank" rel="noopener">PERKESO</a> · <a href="https://www.ptptn.gov.my" target="_blank" rel="noopener">PTPTN</a></p>
+    </section>
+  </section>
+</div>
+</main>
+
+<script>
+/*PURE-START*/
+const BANDS = [[5000,0],[20000,.01],[35000,.03],[50000,.06],[70000,.11],[100000,.19],[400000,.25],[600000,.26],[2000000,.28],[Infinity,.30]];
+function taxOn(ci){
+  let tax=0, prev=0;
+  for(const [top,r] of BANDS){ if(ci>prev) tax += (Math.min(ci,top)-prev)*r; prev=top; }
+  if(ci<=35000) tax = Math.max(0, tax-400);
+  return tax;
+}
+function marginalRate(ci){ for(const [top,r] of BANDS){ if(ci<=top) return r; } return .30; }
+// EPF Third Schedule: contributions are set per wage band (RM20 steps to RM5,000, RM100 steps to RM20,000),
+// worked out on the top of the band and rounded up to the next ringgit; exact percentages only above RM20,000.
+function epfBand(w){
+  if(w<=10) return {e:0, r:0};
+  const up = x => Math.ceil(x-1e-6);
+  if(w>20000) return {e:up(w*0.11), r:up(w*0.12)};
+  const top = w<=5000 ? Math.ceil(w/20-1e-9)*20 : Math.ceil(w/100-1e-9)*100;
+  return {e:up(top*0.11), r:up(top*(w<=5000?0.13:0.12))};
+}
+function calc(gross, opts){
+  const wage = Math.max(0, gross), insured = Math.min(wage, 6000);
+  const {e:epfE, r:epfR} = epfBand(wage);
+  const socsoE = insured*0.005, socsoR = insured*0.0175, eisE = insured*0.002, eisR = insured*0.002;
+  const lin = opts.lindung ? insured*0.0075 : 0;
+  const reliefs = 9000 + Math.min(epfE*12,4000) + Math.min((socsoE+eisE)*12,350) + (opts.relief||0);
+  const ci = Math.max(0, wage*12 - reliefs), taxY = taxOn(ci), pcb = taxY/12;
+  const net = wage - epfE - socsoE - eisE - lin - pcb;
+  return {wage, epfE, epfR, socsoE, socsoR, eisE, eisR, lin, ci, taxY, pcb, net, empCost: wage+epfR+socsoR+eisR, mr: marginalRate(ci)};
+}
+function project(startWage, age, bal, raise, div){
+  const ages=[age], vals=[bal]; let w=startWage, b=bal;
+  for(let a=age; a<60; a++){
+    const k = epfBand(w), contrib = 12*(k.e+k.r);
+    b = b*(1+div) + contrib*(1+div/2); w = w*(1+raise);
+    ages.push(a+1); vals.push(b);
+  }
+  return {ages, vals};
+}
+// PTPTN: ujrah is a flat 1% a year on the balance; standard period depends on the balance.
+function ptTerm(b){ return b<=10000?60 : b<=22000?120 : b<=50000?180 : 240; }
+function pmtAuto(b){ if(b<=0) return 0; const n=ptTerm(b); return b*(1+0.01*n/12)/n; }
+function simLoan(b, pay){
+  if(b<=0) return {months:0, ujrah:0};
+  const u=b*0.01/12;
+  if(pay<=u) return {months:Infinity, ujrah:Infinity};
+  const m=Math.ceil(b/(pay-u)-1e-9);
+  return {months:m, ujrah:u*m};
+}
+function fv(pmt, months, annual){ const ri=annual/12; if(months<=0) return 0; return ri===0 ? pmt*months : pmt*(Math.pow(1+ri,months)-1)/ri; }
+const CITIES = {
+  kv:{name:"Klang Valley (KL)", food:660, rent:400, trans:[140,840], bills:100, other:[670,800]},
+  gt:{name:"George Town (Penang)", food:640, rent:330, trans:[140,730], bills:100, other:[650,770]},
+  jb:{name:"Johor Bahru", food:640, rent:280, trans:[130,650], bills:100, other:[640,730]},
+  as:{name:"Alor Setar (Kedah)", food:560, rent:220, trans:[130,650], bills:100, other:[590,680]}
+};
+function preset(city, mode){
+  const c=CITIES[city], i=mode==="car"?1:0, o={rent:c.rent, food:c.food, trans:c.trans[i], bills:c.bills, other:c.other[i]};
+  o.total=o.rent+o.food+o.trans+o.bills+o.other; return o;
+}
+function minGross(cost, opts){
+  let lo=0, hi=60000;
+  for(let i=0;i<50;i++){ const mid=(lo+hi)/2; if(calc(mid,opts).net>=cost) hi=mid; else lo=mid; }
+  let g=Math.ceil(hi/50)*50; while(calc(g,opts).net<cost && g<100000) g+=50;
+  return g;
+}
+/*PURE-END*/
+
+const $ = id => document.getElementById(id);
+// every numeric input is read through num(): blanks, text and negatives count as 0, with an optional cap
+const num = (id, max=1e7) => { const v=parseFloat($(id).value); return isFinite(v)&&v>0 ? Math.min(v,max) : 0; };
+const RM = (n, d=2) => { const v=isFinite(n)?n:0, a=Math.abs(v); return (v<0 && +a.toFixed(d)!==0 ? "−" : "")+"RM "+a.toLocaleString("en-MY",{minimumFractionDigits:d,maximumFractionDigits:d}); };
+const RM0 = n => RM(n,0);
+const pct = (x,d=0) => (x*100).toFixed(d)+"%";
+const short = s => s.split(" (")[0];
+const C = {net:"#0b5fff", epf:"#00b38a", tax:"#e5484d", socso:"#f5a524", eis:"#7c5cff", lin:"#94a3b8"};
+const yrs = m => m===Infinity ? "never" : (m<12 ? m+" months" : (m/12).toFixed(1)+" years");
+const ins = (cls, icon, html) => `<div class="insight ${cls}"><span class="ic" aria-hidden="true">${icon}</span><div>${html}</div></div>`;
+const chip = (id, cls, text) => { const e=$(id); e.className="chip "+cls; e.textContent=text; e.hidden=false; };
+
+const COSTS = [["rent","Rent","EPF's figure assumes a rented room"],["food","Food","Groceries and eating out"],["trans","Transport","Fares, or car loan, petrol, tolls, parking"],["bills","Bills and phone","Utilities, internet, mobile plan"],["other","Everything else","Personal care, health, social, one-off costs, RM150 savings"]];
+const RELIEFS = [
+  ["life","Lifestyle","Books, phone or laptop, internet bill, short courses",2500],
+  ["sport","Sports and fitness","Gym membership, equipment, facility fees",1000],
+  ["medins","Medical or education insurance","Premiums you pay for yourself",4000],
+  ["lifeins","Life insurance or takaful","Premiums, or voluntary EPF top-ups",3000],
+  ["prs","Private retirement scheme or deferred annuity","Contributions you choose to make",3000],
+  ["med","Medical check-up, vaccination, dental","Each capped at RM1,000, paid by you",3000],
+  ["edu","Education fees (self)","Master's, or approved professional and technical courses",7000]
+];
+const DEFAULTS = {gross:"3800",allow:"0",city:"kv",mode:"pt",grossB:"",cityB:"kv",age:"23",bal:"0",raise:"4",div:"5.5",infl:"2.5",p_bal:"0",p_inst:"",p_extra:"0",p_ret:"5",p_disc:"0"};
+const EXAMPLE = {gross:"3900",allow:"0",city:"kv",mode:"pt",grossB:"3600",cityB:"as",age:"23",bal:"0",raise:"4",div:"5.5",infl:"2.5",p_bal:"30000",p_inst:"",p_extra:"100",p_ret:"5",p_disc:"0",r_life:"1500",r_sport:"600"};
+
+const cityOpts = Object.entries(CITIES).map(([k,c])=>`<option value="${k}">${c.name.split(" (")[0]}</option>`).join("");
+$("city").innerHTML = cityOpts; $("cityB").innerHTML = cityOpts;
+$("costRows").innerHTML = COSTS.map(c=>`<div class="costrow"><label for="c_${c[0]}" style="margin:0;color:var(--ink);font-size:13.5px">${c[1]}<small>${c[2]}</small></label><div class="inp"><span>RM</span><input id="c_${c[0]}" type="number" inputmode="decimal" min="0" step="10"></div></div>`).join("");
+$("relRows").innerHTML = RELIEFS.map(r=>`<div class="rel"><label for="r_${r[0]}" style="margin:0;color:var(--ink);font-size:13.5px">${r[1]} <span class="tag">max ${RM0(r[3])}</span><small>${r[2]}</small></label><div class="inp"><span>RM</span><input id="r_${r[0]}" type="number" inputmode="decimal" min="0" max="${r[3]}" step="100" value="0"></div><div class="sv" id="s_${r[0]}">–</div></div>`).join("");
+function fillCosts(){ const p=preset($("city").value,$("mode").value); COSTS.forEach(c=>$("c_"+c[0]).value=p[c[0]]); }
+function load(set){
+  Object.entries(DEFAULTS).forEach(([k,v])=>$(k).value=v); RELIEFS.forEach(r=>$("r_"+r[0]).value="0"); $("lindung").checked=true;
+  Object.entries(set||{}).forEach(([k,v])=>$(k).value=v);
+  fillCosts(); render();
+}
+fillCosts();
+$("city").addEventListener("input",fillCosts); $("mode").addEventListener("input",fillCosts);
+const claimed = skip => RELIEFS.reduce((s,r)=> s + (r[0]===skip?0:num("r_"+r[0], r[3])), 0);
+
+let chart, chartData;
+function drawChart(){
+  if(!chartData || $("t-retirement").hidden) return;
+  if(!window.Chart){ $("chartbox").innerHTML = `<p class="hint">The chart library couldn't load. The table below shows the same numbers.</p>`; $("chartbox").style.height="auto"; $("retDetails").open=true; return; }
+  if(chart){ chart.data.labels=chartData.labels; chart.data.datasets=chartData.ds; chart.update(); chart.resize(); return; }
+  chart = new Chart($("chart"),{type:"line",data:{labels:chartData.labels,datasets:chartData.ds},options:{maintainAspectRatio:false,interaction:{mode:"index",intersect:false},
+    plugins:{legend:{labels:{boxWidth:12,font:{family:"Plus Jakarta Sans",size:11}}},tooltip:{callbacks:{label:c=>c.dataset.label.split(" (")[0]+": "+RM0(c.parsed.y)}}},
+    scales:{x:{title:{display:true,text:"Age"},grid:{display:false}},y:{ticks:{callback:v=>"RM"+(v/1000).toFixed(0)+"k"}}}}});
+}
+
+function render(){
+  const lindung = $("lindung").checked, allow = num("allow",1e6);
+  const opts = {lindung, relief: claimed()};
+  const gross = num("gross",1e6) + allow, has = gross>0;
+  const r = calc(gross, opts), r0 = calc(gross, {lindung, relief:0});
+  const mode = $("mode").value, cityK = $("city").value, city = CITIES[cityK];
+
+  const pBal = num("p_bal"), auto = pmtAuto(pBal), instIn = num("p_inst"), inst = instIn||auto, extra = num("p_extra");
+  const ptPay = pBal>0 ? inst+extra : 0;
+  const living = COSTS.reduce((s,c)=>s+num("c_"+c[0],1e6),0), costs = living+ptPay, left = r.net-costs;
+  const share = r.net>0 ? costs/r.net : Infinity;
+
+  // KPIs
+  $("kNet").textContent = RM(r.net);
+  $("kNetS").textContent = has ? `${RM0(r.net*12)} a year` : "Enter your salary";
+  $("kLeft").textContent = has ? RM0(left) : "–"; $("kLeft").className = "v "+(!has?"":left>=0?"up":"down");
+  $("kLeftS").textContent = `${short(city.name)} · costs ${RM0(costs)}`;
+  $("kEpf").textContent = RM0(r.epfE+r.epfR);
+  $("kEpfS").textContent = `You ${RM0(r.epfE)} + employer ${RM0(r.epfR)}`;
+  $("kTax").textContent = RM(r.pcb);
+  $("kTaxS").textContent = r.taxY>0 ? `${RM0(r.taxY)} a year · ${pct(r.taxY/(gross*12),1)} of pay` : "No tax at this income";
+
+  // PAYSLIP
+  $("hPay").textContent = has ? pct(r.net/gross,1) : "–";
+  chip("hPayC","", has ? `${RM0(gross-r.net)} a month in deductions` : "Enter your salary");
+  const parts = [["Take-home pay",r.net,C.net],["EPF (you, 11%)",r.epfE,C.epf],["Income tax (PCB, estimate)",r.pcb,C.tax],["SOCSO (0.5%)",r.socsoE,C.socso],["EIS (0.2%)",r.eisE,C.eis]];
+  if(lindung) parts.push(["LINDUNG 24 Jam (0.75%)",r.lin,C.lin]);
+  $("bar").innerHTML = parts.map(p=>`<div style="width:${has?p[1]/gross*100:0}%;background:${p[2]}"></div>`).join("");
+  $("bar").setAttribute("aria-label","Share of gross pay: "+parts.map(p=>`${p[0]} ${has?pct(p[1]/gross,1):"0%"}`).join(", "));
+  $("brk").innerHTML = parts.map(p=>`<tr><td><span class="dot" style="background:${p[2]}" aria-hidden="true"></span>${p[0]}</td><td>${RM(p[1])}</td></tr>`).join("") + `<tr class="total"><td>Gross pay</td><td>${RM(gross)}</td></tr>`;
+  $("emp").innerHTML = `<tr><td>Your gross salary</td><td>${RM(gross)}</td></tr><tr><td>Employer EPF (${gross<=5000?"13":"12"}%)</td><td>${RM(r.epfR)}</td></tr><tr><td>Employer SOCSO (1.75%)</td><td>${RM(r.socsoR)}</td></tr><tr><td>Employer EIS (0.2%)</td><td>${RM(r.eisR)}</td></tr><tr class="total"><td>Total cost to employer</td><td>${RM(r.empCost)}</td></tr>`;
+  const r2 = calc(gross+500, opts);
+  $("raiseIns").innerHTML = ins("w","💡",`<b>A RM500 raise</b> adds about <b>${RM0(r2.net-r.net)}</b> to take-home and <b>${RM0((r2.epfE+r2.epfR)-(r.epfE+r.epfR))}</b> to EPF each month.${gross<=5000 && gross+500>5000 ? " Above RM5,000 the employer EPF rate drops from 13% to 12%." : ""}`);
+
+  // AFFORD
+  $("hLeft").textContent = has ? RM0(left) : "–"; $("hLeft").className = "hn "+(!has?"":left>=0?"up":"down");
+  $("hLeftC").textContent = `left each month in ${short(city.name)} after ${RM0(costs)} of costs`;
+  const v = !has ? ["","Enter your salary","Add your monthly gross salary to see whether it covers these costs.","ℹ️",""]
+          : share<=.5 ? ["ok","Comfortable","Costs take half or less of your take-home pay.","✅",""]
+          : share<=.7 ? ["ok","Workable","Costs fit within the common 50–70% rule of thumb.","👍",""]
+          : share<=1 ? ["mid","Stretched","Costs take most of your pay, leaving little room to save.","⚠️","w"]
+          : ["bad","Shortfall","This salary doesn't cover these costs.","🚨","b"];
+  chip("hLeftChip", v[0], has ? `${v[1]} · costs are ${pct(share)} of take-home` : v[1]);
+  $("costSrc").textContent = `Pre-filled from EPF's Belanjawanku 2024/2025 minimum budget for a single person in ${short(city.name)}, ${mode==="car"?"car owner":"public transport"}: ${RM0(preset(cityK,mode).total)} a month.`;
+  $("costTot").innerHTML = `<tr><td>Living costs</td><td>${RM0(living)}</td></tr>${pBal>0?`<tr><td>PTPTN repayment</td><td>${RM0(ptPay)}</td></tr>`:""}<tr class="total"><td>Total monthly costs</td><td>${RM0(costs)}</td></tr>`;
+  $("verdict").innerHTML = ins(v[4], v[3], `<b>${v[1]}.</b> ${v[2]}`);
+  const base0 = {lindung, relief:0}, mg = minGross(costs, base0), mg20 = minGross(costs/0.8, base0);
+  $("minIns").innerHTML = ins("","🎯",`<b>Salary floor here (estimate):</b> about <b>${RM0(mg)}</b> gross to break even, or <b>${RM0(mg20)}</b> to also set aside 20% of take-home.`);
+  const ef = costs*6, half = left/2;
+  $("efIns").innerHTML = ins("","🛟",`<b>Emergency fund:</b> six months of costs is <b>${RM0(ef)}</b>.${has&&half>0?` Setting aside half of what's left (${RM0(half)}) would take about <b>${Math.ceil(ef/half)} months</b>.`:""}`);
+
+  const gB = num("grossB",1e6); let B=null;
+  if(gB>0){
+    const b = calc(gB+allow, opts), kB=$("cityB").value, cB = CITIES[kB], bCost = preset(kB,mode).total + ptPay, bLeft = b.net-bCost, d = bLeft-left, gd = (gB+allow)-gross;
+    B = {grossMonthly:gB+allow, city:cB.name, takeHome:Math.round(b.net), totalCosts:Math.round(bCost), leftEachMonth:Math.round(bLeft)};
+    $("cmpCard").hidden=false;
+    $("cmp").innerHTML = `<div class="bk"><div class="t">Offer A · ${short(city.name)}</div><div class="a">${RM0(left)} left</div><div class="p">${RM0(gross)} gross, ${RM0(r.net)} net, ${RM0(costs)} costs</div></div><div class="bk"><div class="t">Offer B · ${short(cB.name)}</div><div class="a">${RM0(bLeft)} left</div><div class="p">${RM0(gB+allow)} gross, ${RM0(b.net)} net, ${RM0(bCost)} costs</div></div><div class="bk"><div class="t">Offer B compared with A</div><div class="a ${d>=0?"up":"down"}">${d>=0?"+":"−"}${RM0(Math.abs(d))} a month</div><div class="p">${d>=0?"more":"less"} left over, ${RM0(Math.abs(d*12))} a year</div></div>`;
+    $("cmpIns").innerHTML = ins("","⚖️",`Offer B pays <b>${RM0(Math.abs(gd))} ${gd>=0?"more":"less"}</b> gross but leaves <b>${RM0(Math.abs(d))} ${d>=0?"more":"less"}</b> each month after tax and living costs.${(gd>0&&d<0)||(gd<0&&d>0)?" <b>The higher salary leaves you with less.</b>":""} Offer B uses the reference cost for its city. Pay is one factor; growth, commute and the role itself matter too.`);
+  } else $("cmpCard").hidden=true;
+
+  $("cityTbl").innerHTML = `<tr><th scope="col">City</th><th scope="col" class="r">Reference cost</th><th scope="col" class="r">Break-even gross</th><th scope="col">Left each month</th></tr>` + Object.entries(CITIES).map(([k,c])=>{
+    const t=preset(k,mode).total+ptPay, l=r.net-t;
+    return `<tr class="${k===cityK?"sel":""}"><td>${c.name}${k===cityK?" (selected)":""}</td><td class="r">${RM0(t)}</td><td class="r">${RM0(minGross(t,base0))}</td><td class="${l>=0?"up":"down"}">${has?RM0(l):"–"}</td></tr>`; }).join("");
+
+  // PTPTN
+  let ptSummary = null;
+  if(pBal<=0){
+    $("hPt").textContent = "No loan entered"; $("hPtC").textContent = "Enter your PTPTN balance below to see a repayment plan"; $("hPtChip").hidden = true; $("pCard").hidden = true;
+  } else {
+    const base = simLoan(pBal, inst), fast = simLoan(pBal, inst+extra), ret = num("p_ret",50)/100, disc = num("p_disc",100)/100;
+    ptSummary = {balance:pBal, instalment:Math.round(inst), extraPayment:extra, clearsIn:yrs(fast.months)};
+    $("pCard").hidden = false;
+    $("hPt").textContent = fast.months===Infinity ? "Never clears" : yrs(fast.months);
+    $("hPtC").textContent = fast.months===Infinity ? "the payment is lower than the yearly ujrah" : `to clear ${RM0(pBal)} paying ${RM0(inst+extra)} a month (estimate)`;
+    chip("hPtChip", fast.months===Infinity?"bad":"", r.net>0 ? `${pct(ptPay/r.net,1)} of take-home` : "Enter your salary");
+    $("pTbl").innerHTML = `<tr><td>Monthly instalment${instIn?"":` (estimate, ${ptTerm(pBal)/12}-year standard period)`}</td><td>${RM0(inst)}</td></tr><tr><td>Time to clear at the instalment</td><td>${yrs(base.months)}</td></tr><tr><td>Total ujrah (flat 1% a year)</td><td>${base.ujrah===Infinity?"–":RM0(base.ujrah)}</td></tr>${extra>0&&fast.months!==Infinity?`<tr><td>Time to clear with ${RM0(extra)} extra</td><td>${yrs(fast.months)}</td></tr><tr><td>Ujrah saved by paying extra</td><td>${base.ujrah===Infinity?"–":RM0(base.ujrah-fast.ujrah)}</td></tr>`:""}${disc>0?`<tr><td>Saving if settled in full at ${pct(disc)} off</td><td>${RM0(pBal*disc)}</td></tr>`:""}`;
+    let h = "";
+    if(base.months===Infinity) h += ins("b","🚨",`An instalment of ${RM0(inst)} doesn't cover the ujrah, so the balance wouldn't fall. Check your repayment schedule in myPTPTN.`);
+    else if(extra>0){
+      const A = fv(extra, base.months, ret), Bv = fv(inst+extra, base.months-fast.months, ret), d = A-Bv;
+      h += ins("","⚖️",`<b>Two scenarios over ${yrs(base.months)} (illustration):</b> putting the extra ${RM0(extra)} into savings at an assumed ${pct(ret,1)} reaches about <b>${RM0(A)}</b>. Clearing the loan early, then saving the freed-up ${RM0(inst+extra)}, reaches about <b>${RM0(Bv)}</b>. The ${d>0?"first":"second"} ends about ${RM0(Math.abs(d))} ahead under these assumptions. Returns aren't guaranteed and can be negative; the ujrah saving is certain. This compares scenarios and is not a recommendation.`);
+    } else h += ins("","💡","Add an extra monthly payment above to compare paying off faster with saving the money.");
+    if(disc>0) h += ins("","🏷️",`A ${pct(disc)} settlement discount would save <b>${RM0(pBal*disc)}</b>. Campaigns come and go, so confirm on ptptn.gov.my first.`);
+    h += ins("w","📌","PTPTN's repayment page says repayment starts 12 months after your studies end and ujrah is charged from month 13, so earlier payments carry no ujrah. The first-class honours exemption now has conditions (full-time degree at a public university, B40 or M40 household from 1 January 2026, apply within 12 months of convocation). Confirm the current rules with PTPTN.");
+    $("pIns").innerHTML = h;
+  }
+
+  // TAX
+  RELIEFS.forEach(x=>{ const amt=num("r_"+x[0],x[3]); const s = amt>0 ? calc(gross,{lindung,relief:claimed(x[0])}).taxY - r.taxY : 0; $("s_"+x[0]).textContent = amt>0 ? RM0(s) : "–"; });
+  const saved = r0.taxY - r.taxY, tot = claimed();
+  $("hTax").textContent = RM0(r.taxY); $("hTaxC").textContent = "estimated income tax for the year (YA 2026)";
+  chip("hTaxChip", saved>0?"ok":"", saved>0 ? `${RM0(saved)} saved by your reliefs` : r0.taxY>0 ? "No extra reliefs entered" : "No tax payable");
+  $("taxTbl").innerHTML = `<tr><td>Tax before extra reliefs</td><td>${RM0(r0.taxY)}</td></tr><tr><td>Reliefs entered</td><td>${RM0(tot)}</td></tr><tr class="total"><td>Estimated tax after reliefs</td><td>${RM0(r.taxY)}</td></tr>`;
+  $("taxIns").innerHTML = r0.taxY<=0
+    ? ins("","🧾","No income tax is payable at this salary, so extra reliefs don't change the result. Keep receipts and check LHDN's rules on who must file.")
+    : ins(r0.mr<=.03?"w":"","🧾",`At a <b>${pct(r0.mr)}</b> marginal rate, each RM1,000 of relief cuts tax by about <b>${RM0(1000*r0.mr)}</b>.${r0.mr<=.03?" That's small, so spending just to get a relief costs more than it saves.":""} Reliefs have conditions, so check LHDN before claiming.`);
+
+  // RETIREMENT
+  const age = Math.min(59, Math.max(17, Math.round(num("age"))||23));
+  const p = project(gross, age, num("bal"), num("raise",50)/100, num("div",50)/100), final = p.vals[p.vals.length-1];
+  // EPF's targets are in today's prices, so deflate the projection before comparing
+  const infl = num("infl",50)/100, real = p.vals.map((x,i)=>x/Math.pow(1+infl,i)), finalReal = real[real.length-1];
+  const big = x => x>=1e6 ? "RM "+(x/1e6).toFixed(2)+" million" : RM0(x);
+  const bench = [[390000,"Basic"],[650000,"Adequate"],[1300000,"Enhanced"]], hit = bench.filter(x=>finalReal>=x[0]).pop();
+  $("hRet").textContent = big(finalReal);
+  $("hRetC").textContent = `projected EPF at 60 in today's prices (${big(final)} in future ringgit). An illustration, not a forecast.`;
+  chip("hRetChip", hit?"ok":"mid", hit ? `Above EPF's ${hit[1]} target` : "Below EPF's Basic target");
+  $("epfIns").innerHTML = ins("","🎯",`EPF's targets at 60 are RM390,000 (Basic), RM650,000 (Adequate) and RM1.3 million (Enhanced). They are in today's prices, so the projection is converted to today's prices using your ${num("infl",50)}% inflation assumption. This projection assumes a ${num("raise",50)}% raise and ${num("div",50)}% dividend every year, which won't hold exactly. EPF declared 6.15% for 2025; past rates don't predict future ones.`);
+  const ds = [{label:"Projected EPF balance (today's prices)",data:real,borderColor:C.epf,backgroundColor:"rgba(0,179,138,.12)",fill:true,tension:.3,pointRadius:0,borderWidth:3}];
+  bench.forEach((b,i)=>ds.push({label:b[1]+" ("+RM0(b[0])+")",data:p.ages.map(()=>b[0]),borderColor:["#b86e00","#0b5fff","#6a45e0"][i],borderDash:[[6,5],[2,4],[12,4]][i],pointRadius:0,borderWidth:1.5,fill:false}));
+  chartData = {labels:p.ages, ds};
+  const rows = p.ages.map((a,i)=>[a,p.vals[i],real[i]]).filter(([a],i,arr)=> i===0 || i===arr.length-1 || a%5===0);
+  $("retTbl").innerHTML = `<tr><th scope="col">Age</th><th scope="col" class="r">Future ringgit</th><th scope="col">Today's prices</th></tr>` + rows.map(([a,vv,rr])=>`<tr><td>${a}</td><td class="r">${RM0(vv)}</td><td>${RM0(rr)}</td></tr>`).join("");
+  $("chart").setAttribute("aria-label",`Line chart: projected EPF balance rising from ${RM0(p.vals[0])} at age ${age} to ${RM0(finalReal)} at age 60 in today's prices, against EPF targets of RM390,000, RM650,000 and RM1.3 million. The same numbers are in the table below.`);
+  drawChart();
+
+  window._ctx = {offerA:{grossMonthly:gross, takeHome:Math.round(r.net), epfEmployee:Math.round(r.epfE), epfEmployer:Math.round(r.epfR), socso:+r.socsoE.toFixed(2), eis:+r.eisE.toFixed(2), lindung24Jam:+r.lin.toFixed(2), estimatedTaxPerYear:Math.round(r.taxY), marginalTaxRate:r.mr, employerTotalCost:Math.round(r.empCost)},
+    living:{city:city.name, transport:mode==="car"?"own car":"public transport", livingCosts:living, ptptnPayment:Math.round(ptPay), totalCosts:Math.round(costs), leftEachMonth:Math.round(left), costShareOfTakeHome:isFinite(share)?+share.toFixed(2):null, breakEvenGross:mg, grossNeededToSetAside20pct:mg20},
+    ptptn:ptSummary, offerB:B, taxReliefsEntered:tot, estimatedTaxSavedPerYear:Math.round(saved), projectedEpfAt60TodaysPrices:Math.round(finalReal), projectedEpfAt60FutureRinggit:Math.round(final), age};
+  window._summary = `FirstSalary summary (estimates, rates as at November 2026)\nGross: ${RM(gross)}/month · Take-home: ${RM(r.net)}/month\nEPF: you ${RM0(r.epfE)} + employer ${RM0(r.epfR)} · Est. tax ${RM0(r.taxY)}/yr\n${city.name}: costs ${RM0(costs)}/month${pBal>0?` (incl. PTPTN ${RM0(ptPay)})`:""} · Left ${RM0(left)}/month\nBreak-even gross here: ${RM0(mg)}${B?`\nOffer B (${B.city}): ${RM0(B.grossMonthly)} gross · left ${RM0(B.leftEachMonth)}/month`:""}\nProjected EPF at 60 (illustration, today's prices): ${RM0(finalReal)}\nGeneral guide only, not financial or tax advice. Figures can contain errors; no liability is accepted.`;
+}
+
+document.querySelectorAll("aside input, aside select, .tab input, .tab select").forEach(el=>el.addEventListener("input",render));
+
+// tabs: hash-routed, keyboard operable
+const TABS = ["payslip","afford","ptptn","tax","retirement","coach"];
+function show(t, focus){
+  if(!TABS.includes(t)) t="payslip";
+  TABS.forEach(x=>{ $("t-"+x).hidden = x!==t; const b=$("tab-"+x); b.setAttribute("aria-selected", x===t); b.tabIndex = x===t?0:-1; });
+  const b=$("tab-"+t), bar=$("tabs"); bar.scrollLeft = Math.max(0, b.offsetLeft - (bar.clientWidth-b.offsetWidth)/2);
+  if(focus) b.focus();
+  if(t==="retirement") drawChart();
+}
+function go(t, focus){ show(t, focus); try{ history.replaceState(null,"","#"+t); }catch(e){ try{ location.hash=t; }catch(e2){} } }
+TABS.forEach((t,i)=>{ const b=$("tab-"+t);
+  b.addEventListener("click",()=>go(t));
+  b.addEventListener("keydown",e=>{ const k=e.key; let j = k==="ArrowRight"?i+1 : k==="ArrowLeft"?i-1 : k==="Home"?0 : k==="End"?TABS.length-1 : null; if(j===null) return; e.preventDefault(); go(TABS[(j+TABS.length)%TABS.length], true); });
+});
+window.addEventListener("hashchange",()=>show(location.hash.slice(1)));
+
+$("exBtn").addEventListener("click",()=>{ load(EXAMPLE); go("afford"); });
+$("resetBtn").addEventListener("click",()=>{ load(); go("payslip"); });
+$("legalLink").addEventListener("click",()=>{ const l=$("legal"); l.scrollIntoView({block:"start"}); l.focus({preventScroll:true}); });
+$("copyBtn").addEventListener("click",async()=>{
+  try{ await navigator.clipboard.writeText(window._summary); $("copied").textContent="Copied"; }
+  catch(e){ $("copied").textContent="Copying was blocked here."; }
+  setTimeout(()=>$("copied").textContent="",2500);
+});
+
+$("more").open = window.matchMedia("(min-width: 901px)").matches;
+render();
+show(location.hash.slice(1));
+</script>
+</body>
+</html>
